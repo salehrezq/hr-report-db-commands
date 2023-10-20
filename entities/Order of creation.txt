@@ -1,0 +1,9 @@
+employees
+attendance
+late
+attendance_deductions
+cases
+performance_types
+performance
+salaries
+salary_advances

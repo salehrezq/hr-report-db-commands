@@ -1,0 +1,9 @@
+CREATE TABLE employees (
+id INT NOT NULL AUTO_INCREMENT,
+`name` VARCHAR(50) NOT NULL,
+`enrolled_date` DATE,
+`salary` DECIMAL(12,3) NOT NULL,
+`photo` LONGBLOB NULL,
+`active` TINYINT(1) DEFAULT 0,
+PRIMARY KEY (id)
+);

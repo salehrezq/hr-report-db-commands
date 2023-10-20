@@ -1,0 +1,147 @@
+CREATE TABLE employees (
+id INT NOT NULL AUTO_INCREMENT,
+`name` VARCHAR(50) NOT NULL,
+`enrolled_date` DATE,
+`salary` DECIMAL(12,3) NOT NULL,
+`photo` LONGBLOB NULL,
+`active` TINYINT(1) DEFAULT 0,
+PRIMARY KEY (id)
+);
+
+#
+
+CREATE TABLE attendance (
+`id` INT NOT NULL AUTO_INCREMENT,
+`employee_id` INT NOT NULL,
+`date` DATE NOT NULL,
+`state` BOOL NOT NULL,
+`locked` BOOL NOT NULL DEFAULT FALSE,
+
+PRIMARY KEY (id),
+
+
+UNIQUE `unique_employee_id_with_date` (employee_id, `date`),
+
+FOREIGN KEY `fk_attendance.employees_id_references_employees.id` (employee_id)
+	REFERENCES employees(id)
+	ON DELETE CASCADE
+);
+
+#
+
+CREATE TABLE late (
+`id` INT NOT NULL AUTO_INCREMENT,
+`attendance_id` INT NOT NULL, 
+`minutes_late` INT NOT NULL,
+
+PRIMARY KEY (id),
+
+UNIQUE INDEX `unique_attendance_id` (attendance_id),
+
+FOREIGN KEY `fk_late.attendance_id_references_attendance.id` (attendance_id)
+	REFERENCES attendance(id)
+	ON DELETE CASCADE
+);
+
+#
+
+CREATE TABLE attendance_deductions (
+`id` INT NOT NULL AUTO_INCREMENT,
+`employee_id` INT NOT NULL,
+`attendance_id` INT NOT NULL,
+`description_ar` TEXT NOT NULL,
+`description_en` TEXT NOT NULL,
+`deduction` DECIMAL(12,3) NOT NULL,
+
+PRIMARY KEY (id),
+
+FOREIGN KEY `fk_attendance_deductions.employee_id_references_employees.id` (employee_id)
+	REFERENCES employees(id)
+	ON DELETE CASCADE,
+
+FOREIGN KEY `fk_attendance_deductions.attendance_id_references_attendance.id` (attendance_id)
+	REFERENCES attendance(id)
+	ON DELETE CASCADE
+);
+
+#
+
+CREATE TABLE cases (
+`id` INT NOT NULL AUTO_INCREMENT,
+`employee_id` INT NOT NULL,
+`date` DATE NOT NULL,
+`title` VARCHAR(150) NOT NULL,
+`description` VARCHAR(5000) NULL,
+
+PRIMARY KEY (id),
+
+FOREIGN KEY `fk_cases.employee_id_references_employees.id` (employee_id)
+REFERENCES employees(id)
+  ON DELETE CASCADE
+);
+
+#
+
+CREATE TABLE performance_types (
+`id` INT NOT NULL AUTO_INCREMENT,
+`type` VARCHAR(50) NOT NULL,
+`state` BOOL NOT NULL,
+PRIMARY KEY (id));
+
+#
+
+CREATE TABLE performance (
+`id` INT NOT NULL AUTO_INCREMENT,
+`employee_id` INT NOT NULL,
+`date_time` DATETIME NOT NULL,
+`type_id` INT NOT NULL,
+`state` BOOL NOT NULL,
+`amount` DECIMAL(12,3) NOT NULL,
+`title` VARCHAR(150) NOT NULL,
+`description` VARCHAR(5000) NULL,
+`locked` BOOL NOT NULL DEFAULT FALSE,
+
+PRIMARY KEY (id),
+
+FOREIGN KEY `fk_performance.employee_id_references_employees.id` (employee_id)
+	REFERENCES employees(id)
+	ON DELETE CASCADE,
+
+FOREIGN KEY `fk_performance.type_id_references_performance_types.id` (type_id)
+	REFERENCES performance_types(id)
+	ON DELETE CASCADE
+);
+
+#
+
+CREATE TABLE salaries (
+`id` INT NOT NULL AUTO_INCREMENT,
+`employee_id` INT NOT NULL,
+`subject_year_month` DATE NOT NULL,
+`date_given` DATE NOT NULL,
+`agreed_salary` DECIMAL (12,3) NOT NULL,
+`payable` DECIMAL(12,3) NOT NULL,
+
+PRIMARY KEY (id),
+
+FOREIGN KEY `fk_salaries.employee_id_references_employees.id` (employee_id)
+	REFERENCES employees(id)
+	ON DELETE CASCADE
+);
+
+#
+
+CREATE TABLE salary_advances (
+`id` INT NOT NULL AUTO_INCREMENT,
+`employee_id` INT NOT NULL,
+`subject_year_month` DATE NOT NULL,
+`date_given` DATE NOT NULL,
+`amount` DECIMAL (12,3) NOT NULL,
+`locked` BOOL NOT NULL DEFAULT FALSE,
+
+PRIMARY KEY (id),
+
+FOREIGN KEY `fk_salary_advances.employee_id_references_employees.id` (employee_id)
+	REFERENCES employees(id)
+	ON DELETE CASCADE
+);
